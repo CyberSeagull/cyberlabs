@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+    restart: always
+    depends_on:
+      - mongo
+  nginx:
+    image: nginx
+    restart: always
+    ports:
+      - "4000:80"
+      - "4443:443"
+    volumes:
+      - "./nginx.conf:/etc/nginx/conf.d/default.conf"
+      - "./certs:/etc/nginx/certs"
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: MONGODB_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: MONGODB_PASSWORD
+      MONGO_INITDB_DATABASE: secure_auth_db
+    volumes:
+      - mongo-data-volume:/data/db
+volumes:
+  mongo-data-volume:
