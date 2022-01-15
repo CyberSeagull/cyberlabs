@@ -16,7 +16,37 @@ class Stplay {
 	   public long reallong;
 	}
 
+class StplayMT {
+	   public String message;
+	   public Craccount account;
+	   public long realNumber;
+	}
+
 public class ClientR {
+	public static int rnd(int max) // return range [0;max]
+	{	return (int) (Math.random() * ++max);
+	}
+
+	public Craccount getplayerid(String pathuri, Gson g) {
+        Craccount newacc=null;
+        String str=null;
+		try {
+			do 
+			{   
+				str=get( pathuri+String.format("/createacc?id=%d", rnd(1000000)) );
+				System.out.println( str );
+				if ( !( (str.indexOf("error")>0) || (str==null)) ) {
+					newacc = g.fromJson(str, Craccount.class);
+				//	System.out.println( g.toJson(newacc) );
+					System.out.println(newacc.id);
+					break;
+				}
+			} while (true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	    return newacc;
+	}
 	public String get(String uri) throws Exception {
 		HttpClient client = HttpClient.newHttpClient();
 	    HttpRequest request = HttpRequest.newBuilder()
