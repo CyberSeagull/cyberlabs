@@ -22,7 +22,7 @@ class StplayMT {
 	   public long realNumber;
 	}
 
-public class ClientR {
+public class ñlientR {
 	public static int rnd(int max) // return range [0;max]
 	{	return (int) (Math.random() * ++max);
 	}
