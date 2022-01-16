@@ -17,7 +17,7 @@ public class ModeLcg {
     List<Stplay> m_play  = new ArrayList<>();
 	Gson g = new Gson();
 	String pathuri;
-	ñlientR cr;
+	clientR cr;
 	Craccount newacc;
 
 	public ModeLcg(String pathuri){

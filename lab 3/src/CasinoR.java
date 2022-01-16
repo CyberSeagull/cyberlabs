@@ -8,10 +8,10 @@ public class CasinoR {
 	
 	public static void main(String[] args) {
 			
-		 String suri="http://95.217.177.249/casino"; 
+		 String pathuri="http://95.217.177.249/casino"; 
 		 System.out.println( "=================== MT ===========================================" );
 		 ModeMt mt = new ModeMt(pathuri);
-	        mt.calculatioMt();
+	        mt.calculationMt();
 			
 	        System.out.println( "=================== Lcg ==========================================" );
 			ModeLcg lcg = new ModeLcg(pathuri);
