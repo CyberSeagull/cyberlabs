@@ -22,7 +22,7 @@ public class ModeMt {
     		StplayMT newplay = g.fromJson(str, StplayMT.class);
             long seed = System.currentTimeMillis()/1000 - 7;
 
-            RandomMt mt= new RandomMt();
+            RandomMT mt= new RandomMT();
 
             long realNumber = newplay.realNumber;
             mt.seed_mt((int) seed);
