@@ -42,7 +42,7 @@ public class RandomMT {
 	}
 	public void twist() {
 		for (int i=0; i<n; i++ ) {
-			int x = (mt[i] & upper_mask)+mt[(i+1) %n] & lower_mask; 
+			int x = (mt[i] & upper_mask)|mt[(i+1) %n] & lower_mask; 
 			int xA = x>>>1;
       	    if (x % 2 !=0)
       	    	xA = xA^a;
