@@ -18,7 +18,7 @@ public class ModeLcg {
 	Gson g = new Gson();
 	String pathuri;
 	clientR cr;
-	Craccount newacc;
+	Craccount myacc;
 
 	public ModeLcg(String pathuri){
 		this.pathuri=pathuri;
@@ -29,6 +29,7 @@ public class ModeLcg {
 	{
     	return (int) ((_last*ac.a+ac.c) % m);
 	}
+
     
     static long ModInverse(long a, long m)
     {
@@ -47,61 +48,50 @@ public class ModeLcg {
             x += m0;
         return x;
     }    
-
+    
     private Lcgac calculation_a_c() throws Throwable { 
-    	newacc=cr.getplayerid(pathuri, g);
-    	long a=0, c=0;
-    	for (int i=0; i<3; i++) {
-    		String sadd=pathuri+String.format("/playLcg?id=%d&bet=%d&number=%d", newacc.id, 1, clientR.rnd(555));
-    	  	Stplay newplay = g.fromJson(cr.get(sadd), Stplay.class);
-    	  	newplay.reallong=Integer.toUnsignedLong(newplay.realNumber);
-    	  	m_play.add(newplay);
-    	  	if (i>=2) {
-    	  		a=m_play.get(i).reallong-m_play.get(i-1).reallong;
-        	if (a<0)
-//        		a=Integer.toUnsignedLong(  (int) a);
-    		    a=  (int) (a)+m;
-        	long modinv=m_play.get(i-1).reallong-m_play.get(i-2).reallong;
-        	if (modinv<0)
-        		modinv =(int) (modinv)+m;
-        	
-        	modinv = ModInverse(modinv,m);
-        	
-        	a=Integer.toUnsignedLong(  (int) ((a*modinv)% m) );
-        	c=Integer.toUnsignedLong(  (int) (m_play.get(i-1).reallong-m_play.get(i-2).reallong*a) );
-
-        	System.out.println("a= "+a+"   c="+c);
-    	}
-    	
-    	}
-    	
+    	long  a=m_play.get(2).reallong-m_play.get(1).reallong;
+    	if (a<0) a=(int) (a)+m;
+    	long modinv=m_play.get(1).reallong-m_play.get(0).reallong;
+    	if (modinv<0) modinv =(int) (modinv)+m;
+    	a=Integer.toUnsignedLong(  (int) ((a*ModInverse(modinv,m))% m) );
+    	long c=Integer.toUnsignedLong(  (int) (m_play.get(1).reallong-m_play.get(0).reallong*a) );
+    	System.out.println("a= "+a+"   c="+c);
         Lcgac ac = new Lcgac(a, c);
 		return ac;
     }
 	
     public Stplay game() {
     	Stplay newplay = null;
-		try { 
+    	try { 
+    		if (m_play.size()>0)
+            	for(int i=m_play.size()-1; i>=0; i--)
+            		m_play.remove(m_play.get(i));
+    		myacc=cr.getplayerid(pathuri, g);
+        	for (int i=0; i<3; i++) {
+        		String sadd=pathuri+String.format("/playLcg?id=%d&bet=%d&number=%d", myacc.id, 1, clientR.rnd(555));
+        	    newplay = g.fromJson(cr.get(sadd), Stplay.class);
+        		newplay.reallong=Integer.toUnsignedLong(newplay.realNumber);
+        		m_play.add(newplay);
+        	}
 			Lcgac ac= calculation_a_c();
 	    	newplay = m_play.get(m_play.size()-1);
 	    	for (int i=0; i<17; i++) { 
 				int realn = getnextnumber(newplay.reallong, ac);
 	    	    String sadd=pathuri+String.format("/playLcg?id=%d&bet=%d&number=%d", newplay.account.id, bet, realn);
-    //	        System.out.println( sadd );
-	            String str;
-				str = cr.get(sadd );
-	            System.out.println( str );
-	            if (  (str.indexOf("error")>0)  )
+	            String str = cr.get(sadd );
+	            //System.out.println( str );
+	            if ( str.indexOf("error")>0 )
 	            	break;
 	            newplay = g.fromJson(str, Stplay.class);
 	            newplay.reallong=Integer.toUnsignedLong(newplay.realNumber);
-	            System.out.println( g.toJson(newplay) );
+	           // System.out.println( g.toJson(newplay) );//
 	            if (newplay.account.money>=1000000) break;
 			} 
 		} catch (Exception e) {e.printStackTrace();} catch (Throwable e) { e.printStackTrace(); 
 		}
-		System.out.println( g.toJson(newplay) );
+		//System.out.println( g.toJson(newplay) );
 		return newplay;
     }
-
+	
 }
